@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NER</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-lg-12">
+            <hr />
+        </div>
+        <div class="col-lg-12">
+            <div class="col-lg-2 col-lg-offset-1">
+                <button class="btn btn-danger btn-block btn-entity" data-type="PERSON">PERSON</button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-danger btn-block btn-entity" data-type="ORG">ORG</button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-danger btn-block btn-entity" data-type="GPE">GPE</button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-danger btn-block btn-entity" data-type="LOC">LOC</button>
+            </div>
+            <div class="col-lg-2">
+                <button class="btn btn-danger btn-block btn-entity" data-type="PRODUCT">PRODUCT</button>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <hr />
+        </div>
+        <div class="col-lg-12">
+            <div class="col-lg-10 col-lg-offset-1">
+                <textarea class="form-control" rows="10" id="details"></textarea>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <hr />
+        </div>
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="col col-lg-4">
+                <button class="btn btn-success btn-block back">
+                    Anterior
+                </button>
+            </div>
+            <div class="col col-lg-4">
+                <button class="btn btn-success btn-block next" >
+                    Próximo
+                </button>
+            </div>
+            <div class="col col-lg-4">
+                <button class="btn btn-info btn-block save"  data-id="null">
+                    Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+
+        $(document).ready(function(){
+            var entidadesNomeadas = [];
+            var eventos = [];
+            var atualIndex = 0;
+
+            function getSelectionText() {
+                var text = "";
+                if (window.getSelection) {
+                    text = window.getSelection().toString();
+                } else if (document.selection && document.selection.type != "Control") {
+                    text = document.selection.createRange().text;
+                }
+                return text;
+            }
+
+            $(".next").on('click',function(){
+                var index = atualIndex + 1;
+                processNext(index);
+            });
+
+            $(".back").on('click',function(){
+                var index = atualIndex - 1;
+                processNext(index);
+            });
+
+            $(".save").on('click',function(){
+                var _id = $(this).data('id');
+                var details = $("#details").val();
+                var entidadesNomeadasManualmente = entidadesNomeadas;
+                var index = atualIndex + 1;
+
+                $.ajax({
+                    url: 'http://localhost:3000/update',
+                    type:'post',
+                    dataType:'json',
+                    data: {_id: _id, details: details, entidadesNomeadasManualmente: entidadesNomeadasManualmente},
+                    success: function(dados){
+                        processNext(index);
+                    }
+                });
+            });
+
+            $(".btn-entity").on('click',function(){
+                $(".btn-entity").removeClass('active');
+                $(this).addClass('active');
+
+                var thisText = $("#details").val();
+                var selectedText = getSelectionText();
+                console.log(selectedText);
+                var start = thisText.indexOf(selectedText);
+                var end = start + selectedText.length;
+
+                if (start >= 0 && end >= 0){
+                    entidadesNomeadas.push({
+                        value:selectedText.toLowerCase(),
+                        start: start,
+                        end: end,
+                        type: $(this).data('type')
+                    });
+                }
+
+                console.log(entidadesNomeadas);
+
+            });
+
+            $.ajax({
+                url: 'http://localhost:3000/events',
+                type:'get',
+                dataType:'json',
+                success: function(dados){
+                    eventos = dados;
+                    processNext(0);
+                }
+            });
+
+            function processNext(index){
+                $("#details").val(eventos[index].details);
+                $(".save").data('id',eventos[index]._id);
+                atualIndex = index;
+                entidadesNomeadas = [];
+            }
+        });
+    </script>
+
+</body>
+</html>
