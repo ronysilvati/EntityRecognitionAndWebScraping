@@ -3,7 +3,7 @@ from pymongo import MongoClient
 cliente = MongoClient('localhost', 27017)
 banco = cliente['eventbrite']
 events = banco['eventbrite']
-allEvents = events.find()
+allEvents = events.find().limit(65).sort([('_id',-1)])
 
 for event in allEvents:
 	accuracySM = 0

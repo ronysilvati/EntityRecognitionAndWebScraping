@@ -1,0 +1,16 @@
+- Instale o Scrapy;
+- Instale o MongoDB na porta 27017;
+- No mongo crie o banco "eventbrite" e dentro dele a collection "eventbrite";
+- Acesse o arquivo eventbrite.com.br/eventbrite/eventbrite/spiders/eventbrite_com_br.py
+e altere a lista "start_urls" adicionando apenas as páginas do site eventbrites.com que desejam ser extraídas.
+
+- No terminal, dentro do diretório que este arquivo, acesse o diretório "eventbrite.com.br/eventbrite" e digite: scrapy crawl eventbrite.com.br
+
+- Após a conclusão os dados extraídos estarão presentes no banco eventbrite, no MongoDB seguindo o seguinte padrão:
+
+_id, title, location, details, timeList
+---------------------------------------------------------
+
+Concluidos os passos anteriores, acesse o diretório spacy.
+
+

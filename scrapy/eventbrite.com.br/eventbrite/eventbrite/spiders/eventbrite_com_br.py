@@ -10,8 +10,9 @@ from scrapy.conf import settings
 class EventbriteComBrSpider(scrapy.Spider):
     name = 'eventbrite.com.br'
     allowed_domains = ['eventbrite.com']
+    #Para seguir a politica de utilização, deixo o script aguardando durante 3 segundos antes de cada extração
     settings.overrides['DOWNLOAD_DELAY'] = 3
-
+	
     start_urls = [
         'https://www.eventbrite.com/d/ca--san-francisco/science-and-tech--events/?page=1',
         'https://www.eventbrite.com/d/ca--san-francisco/science-and-tech--events/?page=2'
@@ -33,16 +34,12 @@ class EventbriteComBrSpider(scrapy.Spider):
         urlEvents = response.css('.search-event-card-wrapper aside a::attr(href)').extract()
         urlEventsList = []
 
-        #Para seguir a politica de utilização, deixo o script dormindo num intervalo entre 30 e 50 segundos
-        #time.sleep(3)
         #Percorro a lista de eventos existentes em cada uma das páginas e adiciono em um array
         for urlEvent in urlEvents:
             urlEventsList.append(urlEvent)
 
         #Percorro cada uma das urls e coleto os dados existentes
         for urlToAccessDataEvent in urlEventsList:
-            #Para seguir a politica de utilização, deixo o script dormindo num intervalo entre 30 e 50 segundos
-            #time.sleep(5)
             yield response.follow(urlToAccessDataEvent,self.parse_event_details)
 
         pass
@@ -70,7 +67,7 @@ class EventbriteComBrSpider(scrapy.Spider):
             eventData["timeList"]   = eventTimeList
             eventData["details"]    = eventDetails
 
-            self.collection.insert_one(dict(eventData))
+            #self.collection.insert_one(dict(eventData))
 
         except:
             print "Error................"

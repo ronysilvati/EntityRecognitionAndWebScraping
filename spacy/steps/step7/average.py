@@ -4,7 +4,7 @@ cliente = MongoClient('localhost', 27017)
 banco = cliente['eventbrite']
 events = banco['eventbrite']
 average = banco['eventbrite_average']
-allEvents = events.find()
+allEvents = events.find().limit(65).sort([('_id',-1)])
 
 data	= {}
 data['averageSM'] = 0.0

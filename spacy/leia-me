@@ -1,0 +1,98 @@
+=================================
+Efetuando as anotações manuais
+=================================
+
+- Instale o nodejs;
+- Pelo terminal, a partir do local em que este arquivo se encontra, acesse o diretório "nerServer" e digite: "node index.js &" (Sem aspas);
+- Pelo explorador de arquivos acesse o diretório "ner" e abra o arquivo "index.html" no navegador.
+- Os eventos extraídos contidos no mongodb serão carregados nessa tela (um por vez);
+- Para acompanhar as anotações que forem sendo efetuadas o console do desenvolvedor pode ser
+aberto utilizando F12 (Caso no Chrome);
+- Para efetuar uma anotação, selecione a palavra (Ou o conjunto, ex.: San Francisco) e 
+em seguida clique no botão correspondente à entidade que a palavra corresponde.
+
+PERSON	=> Pessoa;
+ORG	=> Organização;
+GPE	=> Cidade, Estado, País;
+LOC	=> Local;
+PRODUCT	=> Produto;
+
+- Após todas as anotações efetuadas em cada evento, clique em "Salvar" e em seguida 
+clique em "Próximo";
+- Repita o procedimento para a quantidade de eventos que deseja anotar manualmente;
+- Se somente parte dos eventos extraídos será utilizado para identificação das entidades,
+faça o procedimento somente nesse conjunto.
+- Os dados anotados manualmente serão armazenados em "entityManualList" na collection "eventbrite" no MongoDB;
+
+=================================
+Efetuando o treinamento do modelo
+=================================
+
+Obs.: "sm,md,lg" => Define o tamanho de cada modelo utilizado. Caso queira efetuar
+os testes apenas em um modelo, as configurações apartir daqui deverão ser feitas
+somente nos scripts relacionados ao modelo selecionado.
+
+
+- Pelo terminal, acesse o diretório "step3";
+- Nos arquivos "smTraining.py, mdTraining.py, lgTraining.py" altere:
+	"limitQuery" pela quantidade de eventos armazenados no mongodb que deseja treinar;
+	"orderQuery" pela ordenação da consulta que deseja utilizar, (1 ASC, 2 DESC)
+	"output_dir" o diretório que deseja armazenar o modelo
+
+	Ex.: Se vc baixou 100 eventos e anotou manualmente os 40 primeiros, configure "orderQuery e limitQuery" da seguite forma: limitQuery = 60, orderQuery = -1
+	
+- No terminal rode um a um os arquivos do diretório "step3". Utilize "python smTraining.py", por exemplo.
+
+- Serão executadas 50 iterações, após isso, os modelos serão armazenados no diretório definido
+nos scripts;
+
+=================================
+Efetuando as anotações automáticas utilizando os modelos treinados
+=================================
+
+- Acesse o diretório step4;
+- nos arquivos "lg.py, md.py, sm.py" altere o diretório contido em "spacy.load" informando o diretório do modelo treinado (Ex.: Se o arquivo que está sendo editado é o lg.py, informe o diretório do modelo lg que foi treinado anteriormente);
+- As configurações de "limitQuery" e "orderQuery" feitas anteriormente precisam ser efetuadas aqui também;
+- "limitQuery" deverá ser igual a quantidade de eventos que você anotou manualmente;
+- "orderQuery" deverá ser igual a ordem de anotação manual que foram efetuadas nos eventos (Se você anotou os primeiros: 1, Se anotou os últimos: -1);
+- No terminal, dentro do diretório em questão execute um a um os scripts. (Ex.: python sm.py);
+- No mongoDB na collection "eventbrite" serão gerados: "entityAutomaticListLGAfterTraining, entityAutomaticListMDAfterTraining, entityAutomaticListSMAfterTraining" contendo as anotações
+automáticas que foram feitas com os modelos treinados;
+
+=================================
+Efetuando as anotações automáticas com as manuais
+=================================
+- Acesse o diretório step5;
+- nos arquivos "lgCompareWithManual.py,mdCompareWithManual.py,smCompareWithManual.py" altere "limitQuery e orderQuery" com as mesmas configurações efetuadas anteriormente;
+- No terminal, dentro do diretório step5, execute um a um os arquivos. (Ex: python lgCompareWithManual.py);
+- Os resultados contendo as anotações que são intersecção entre "entityManualList" e "entityAutomaticList(SM,MD,LG)" serão registrados em "manualAndAutomaticEqualities(LG,SM,MD)AfterTraining";
+
+=================================
+Verificando a acurácia dos modelos
+=================================
+- Acesse step6;
+- no arquivo "accuracyAfterTraining.py", em "limitQuery e orderQuery" aplique as configurações anteriores;
+- No terminal, no diretório "step6" execute o arquivo "accuracyAfterTraining.py";
+- Após isso, em "eventbrite", serão criados "accuracySMAfterTraining, accuracyMDAfterTraining, accuracyLGAfterTraining";
+
+=================================
+Verificando média
+=================================
+- Acesse o diretório step7;
+- no arquivo "averageAfterTraining.py", em "limitQuery e orderQuery" aplique as configurações anteriores;
+- No mongoDB, no banco "eventbrite", crie a collection "eventbrite_average";
+- No terminal, no diretório "step7" execute o arquivo averageAfterTraining.py. (Ex.: python averageAfterTraining.py);
+- averageSMAfterTraining, averageMDAfterTraining, averageLGAfterTraining com as médias serão
+criados em eventbrite.eventbrite_average.
+
+
+
+
+
+ 
+
+
+
+
+
+

@@ -1,9 +1,12 @@
 from pymongo import MongoClient
 
+limitQuery = 65
+orderQuery = -1
+
 cliente = MongoClient('localhost', 27017)
 banco = cliente['eventbrite']
 events = banco['eventbrite']
-allEvents = events.find()
+allEvents = events.find().limit(limitQuery).sort([('_id',orderQuery)])
 
 for event in allEvents:
 	entitiesWithEqualsValues = []
@@ -13,7 +16,7 @@ for event in allEvents:
 		for manual in event['entityManualList']:
 			addNew = False
 
-			for automatic in event['entityAutomaticListMD']:
+			for automatic in event['entityAutomaticListSMAfterTraining']:
 				for type in automatic:
 					if ((manual['value'] == automatic[type].lower()) and (manual['type'] == type)):
 						addNew = True
@@ -22,5 +25,5 @@ for event in allEvents:
 				entitiesWithEqualsValues.append({manual['type']:manual['value']})
 
 
-		events.update({'_id':event['_id']},{"$set":{'manualAndAutomaticEqualitiesMD':entitiesWithEqualsValues}},upsert=False)
+		events.update({'_id':event['_id']},{"$set":{'manualAndAutomaticEqualitiesSMAfterTraining':entitiesWithEqualsValues}},upsert=False)
 
