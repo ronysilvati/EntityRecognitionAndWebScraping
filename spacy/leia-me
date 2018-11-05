@@ -36,7 +36,7 @@ somente nos scripts relacionados ao modelo selecionado.
 - Pelo terminal, acesse o diretório "step3";
 - Nos arquivos "smTraining.py, mdTraining.py, lgTraining.py" altere:
 	"limitQuery" pela quantidade de eventos armazenados no mongodb que deseja treinar;
-	"orderQuery" pela ordenação da consulta que deseja utilizar, (1 ASC, 2 DESC)
+	"orderQuery" pela ordenação da consulta que deseja utilizar, (1 ASC, -1 DESC)
 	"output_dir" o diretório que deseja armazenar o modelo
 
 	Ex.: Se vc baixou 100 eventos e anotou manualmente os 40 primeiros, configure "orderQuery e limitQuery" da seguite forma: limitQuery = 60, orderQuery = -1
