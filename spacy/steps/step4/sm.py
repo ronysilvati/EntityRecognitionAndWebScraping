@@ -5,7 +5,7 @@ from spacy import displacy
 limitQuery = 65
 orderQuery = -1
 
-nlp = spacy.load('/var/www/html/en_edit_web_md')
+nlp = spacy.load('/var/www/html/en_edit_web_sm')
 
 cliente = MongoClient('localhost', 27017)
 banco = cliente['eventbrite']
