@@ -16,7 +16,7 @@ sys.setdefaultencoding('utf8')
 nlp = spacy.load('en_core_web_sm')
 
 limitQuery = 66
-orderQuery = 1 #1 = ASC, 2 = DESC
+orderQuery = 1 #1 = ASC, -1 = DESC
 output_dir = "/var/www/html/en_edit_web_sm"
 
 cliente = MongoClient('localhost', 27017)
